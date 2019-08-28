@@ -93,13 +93,11 @@ func DeleteContactendpoint(response http.ResponseWriter, request *http.Request) 
 	idDoc := bson.D{{"_id", id}}
 	d, _ := collection.DeleteOne(ctx, idDoc)
 	if d.DeletedCount == 0 {
-		response.WriteHeader(http.StatusNoContent)
+		response.WriteHeader(http.StatusInternalServerError)
 		http.Error(response, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	} else {
-		// json.NewEncoder(response).Encode(d)
-		response.WriteHeader(http.StatusNoContent)
-
+		json.NewEncoder(response).Encode(d)
 	}
 }
 func main() {
@@ -113,5 +111,5 @@ func main() {
 	router.HandleFunc("/students", GetPeopleEndpoint).Methods("GET")
 	router.HandleFunc("/students/{id}", GetContactEndpoint).Methods("GET")
 	router.HandleFunc("/students/{id}", DeleteContactendpoint).Methods("DELETE")
-	http.ListenAndServe(":3006", router)
+	http.ListenAndServe(":3005", router)
 }
